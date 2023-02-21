@@ -45,7 +45,12 @@ class modelFCN:
     
             total_training_loss.append(total_loss_epoch.item())
         
+            print("Completed epoch {}".format(e))
+        
             ## PUT HERE A WAY TO SAVE A CHECKPOINT
+            ckp_name = 'Checkpoints/test_epoch_{}.pth'.format(e)
+            torch.save(self.model.state_dict(), ckp_name)
+            
         return total_training_loss
             
     def evaluate_model(self):
@@ -61,17 +66,3 @@ class modelFCN:
         
         
         
-        for e in range(total_epochs):
-            total_loss_epoch = 0
-            for id, batch in enumerate(dataloader):
-                optimizer.zero_grad()
-                # this should be of dimensionalities (20, BxCxHxW, Bx20)
-                idx, X, y = batch
-
-                X,y  = X.to(device), y.to(device)
-                output = model(X)
-                #print(output>0, y)
-                loss = loss_function(output,y)
-                loss.backward()
-                optimizer.step()
-            total_loss_epoch += loss

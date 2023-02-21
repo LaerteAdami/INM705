@@ -2,21 +2,14 @@ import numpy as np
 
 def pixelwiseAccuracy(pred, gt):
     
-    pred = pred.argmax(dim=1).numpy()
-    pred = pred[0,:,:]
+    acc = []
     
-    gt = gt.numpy()
-    gt = gt[0,:,:]
+    for idx, p in enumerate(pred): 
+        p = p.argmax(dim=0)
+        yy = gt[idx].argmax(dim=0)   
     
-    
-    
-    test = np.zeros_like(gt)
-
-    for i in range(gt.shape[0]):
-        for j in range(gt.shape[1]):
-            test[i,j] = pred[i,j] == gt[i,j]
-            #z = zip(int(ampred[i,j]), int(gt[i,j]))
+        acc.append( ((p == yy)*1).sum() / (p.size(0)*p.size(1)) )
             
-    return sum(sum(test)) / (test.shape[0]*test.shape[1])*100
+    return (sum(acc) / len(acc)).item() # take the average across batch size
     
     
