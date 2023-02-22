@@ -52,8 +52,8 @@ class CityscapesDataset(data.Dataset):
 
     def get_cities(self):
     
-        cities = sorted(os.listdir(self.img_dir))
-
+        cities = sorted(os.listdir(self.img_dir))[0:1]
+        print(cities)
         img_paths_list = []
         mask_paths_list = []
         for city in cities:

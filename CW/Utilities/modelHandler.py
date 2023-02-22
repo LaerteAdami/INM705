@@ -48,7 +48,7 @@ class modelFCN:
             print("Completed epoch {}".format(e))
         
             ## PUT HERE A WAY TO SAVE A CHECKPOINT
-            ckp_name = 'Checkpoints/test_epoch_{}.pth'.format(e)
+            ckp_name = 'city_test_epoch_{}.pth'.format(e)
             torch.save(self.model.state_dict(), ckp_name)
             
         return total_training_loss
