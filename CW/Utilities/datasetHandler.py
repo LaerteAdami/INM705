@@ -45,7 +45,7 @@ class CityscapesDataset(data.Dataset):
                                       transforms.ToTensor(),
                                       transforms.Normalize(mean=[0.485, 0.457, 0.407],
                                                            std=[0.229,0.224,0.225])])
-        self.tgt_ = transforms.Compose([transforms.Resize((350,500)),
+        self.tgt_ = transforms.Compose([#transforms.Resize((350,500)),
                                       transforms.ToPILImage(),
                                       transforms.ToTensor()])
        
@@ -53,7 +53,8 @@ class CityscapesDataset(data.Dataset):
     def get_cities(self):
     
         cities = sorted(os.listdir(self.img_dir))
-
+         
+        cities = cities[0:1]
         img_paths_list = []
         mask_paths_list = []
         for city in cities:
@@ -71,23 +72,34 @@ class CityscapesDataset(data.Dataset):
     
     def get_image(self, idx):
         #img = read_image(os.path.join(self.img_dir, self.imgs[idx])) 
-        img = read_image(self.img_paths_list[idx])
-        
-        
-        
+        img = read_image(self.img_paths_list[idx]) 
         return self.t_(img)
  
     def get_ground_truth(self, idx):     
         #gt_name = self.imgs[idx][:len(self.imgs[idx])-4] +'.png'       
         #gt_img = self.tgt_(read_image(os.path.join(self.gt_dir,gt_name)))
-        gt_img = self.tgt_(read_image(self.mask_paths_list[idx]))
+        
+        #gt_img = self.tgt_(read_image(self.mask_paths_list[idx])) # funziona il loop ma non si vedono le classi
+        gt_img = read_image(self.mask_paths_list[idx])
+        
         gt = torch.zeros_like(gt_img).repeat(self.num_classes, 1, 1)
         for ind in range(self.num_classes):
             gt[ind,:] = ((gt_img==ind)*1) 
-        return gt   
-         
+            
+        gt = gt.type(torch.float32)
+        tresize_ = transforms.Resize((350,500))
+                    
+        return tresize_(gt)
+    
+    
+    #### METHOD FOR VISUALIZATION ####     
+    def get_image_visualization(self,idx):
         
+        tresize_ = transforms.Resize((350,500))      
+        img = read_image(self.img_paths_list[idx]) 
+        return tresize_(img), self.t_(img)
         
+    
     def get_image_path(self, path):     
         img = read_image(os.path.join(self.img_dir,path))   
         return self.t_(img)

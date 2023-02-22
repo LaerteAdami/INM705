@@ -5,7 +5,6 @@ class modelFCN:
     def __init__(self, model, optimizer, loss_function):
         
         self.model = model
-        #self.lr = learning_rate
         self.opt = optimizer
         self.loss_fun = loss_function
         
@@ -22,7 +21,7 @@ class modelFCN:
 
         self.model.train()
 
-        for e in range(total_epochs):
+        for e in range(1,total_epochs+1):
     
             total_loss_epoch = 0
     
@@ -48,8 +47,9 @@ class modelFCN:
             print("Completed epoch {}".format(e))
         
             ## PUT HERE A WAY TO SAVE A CHECKPOINT
-            ckp_name = 'Checkpoints/test_epoch_{}.pth'.format(e)
-            torch.save(self.model.state_dict(), ckp_name)
+            if e%5==0: # save the model every 5 epochs
+                ckp_name = 'Checkpoints/test_epoch_{}.pth'.format(e)
+                torch.save(self.model.state_dict(), ckp_name)
             
         return total_training_loss
             
