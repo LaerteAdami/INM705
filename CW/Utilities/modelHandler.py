@@ -9,7 +9,7 @@ class modelFCN:
         self.loss_fun = loss_function
         
         
-    def train_model(self, dataloader, total_epochs):
+    def train_model(self, dataloader, total_epochs, save_every_epochs, ckp_name):
         
         device = torch.device('cpu')
         if torch.cuda.is_available():
@@ -47,9 +47,9 @@ class modelFCN:
             print("Completed epoch {}".format(e))
         
             ## PUT HERE A WAY TO SAVE A CHECKPOINT
-            if e%5==0: # save the model every 5 epochs
-                ckp_name = 'Checkpoints/test_epoch_{}.pth'.format(e)
-                torch.save(self.model.state_dict(), ckp_name)
+            if e%save_every_epochs == 0: # save the model every "save_every_epochs" epochs
+                ckp_path = 'Checkpoints/'+ckp_name+'_{}.pth'.format(e)
+                torch.save(self.model.state_dict(), ckp_path)
             
         return total_training_loss
             
