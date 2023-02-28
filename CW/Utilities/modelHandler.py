@@ -1,5 +1,70 @@
 import torch
 
+
+
+class modelUNet:
+    
+    def __init__(self, model, optimizer, loss_function):
+        
+        self.model = model
+        self.opt = optimizer
+        self.loss_fun = loss_function
+        
+        
+    def train_model(self, dataloader, total_epochs, save_every_epochs, ckp_name):
+        
+        device = torch.device('cpu')
+        if torch.cuda.is_available():
+            device = torch.device('cuda')
+            
+        self.model.to(device)
+        
+        total_training_loss = []
+
+        self.model.train()
+
+        for e in range(1,total_epochs+1):
+    
+            total_loss_epoch = 0
+    
+            for id_batch, batch in enumerate(dataloader):
+        
+                self.opt.zero_grad()
+        
+                idx, X, y = batch
+                X, y = X.to(device), y.to(device)     
+                output = self.model(X)
+                
+                y = y.argmax(dim=1)
+                loss = self.loss_fun(output, y)
+                loss.backward()
+        
+                self.opt.step()
+        
+                total_loss_epoch += loss
+        
+            total_loss_epoch/=len(dataloader)
+    
+            total_training_loss.append(total_loss_epoch.item())
+        
+            print("Completed epoch {}".format(e))
+        
+            ## SAVE A CHECKPOINT
+            if e%save_every_epochs == 0: # save the model every "save_every_epochs" epochs
+                ckp_path = 'Checkpoints/'+ckp_name+'_{}.pth'.format(e)
+                torch.save(self.model.state_dict(), ckp_path)
+            
+        return total_training_loss
+            
+    def evaluate_model(self):
+        
+        pass
+        
+        
+        
+        
+        
+        
 class modelFCN:
     
     def __init__(self, model, optimizer, loss_function):
@@ -25,14 +90,14 @@ class modelFCN:
     
             total_loss_epoch = 0
     
-            for idx, batch in enumerate(dataloader):
+            for id_batch, batch in enumerate(dataloader):
         
                 self.opt.zero_grad()
         
                 idx, X, y = batch
                 X, y = X.to(device), y.to(device)     
                 output = self.model(X)['out']
-        
+                y = y.argmax(dim=1)
                 loss = self.loss_fun(output, y)
                 loss.backward()
         
@@ -57,12 +122,4 @@ class modelFCN:
         
         pass
         
-        
-        
-
-        
-        
-        
-        
-        
-        
+    
