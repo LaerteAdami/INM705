@@ -62,4 +62,4 @@ class UnetGenerator(nn.Module):
 
         out = self.out(up_4)
 
-        return 
+        return out
