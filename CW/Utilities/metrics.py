@@ -1,34 +1,45 @@
 import numpy as np
+import torch
 
 def meanPixelwiseAccuracy(pred, gt):
     '''
     Compute the mean pixelwise accuracy averaged across one batch
-    pred and gt dimensions: B x C x W x H
+    pred dimensions: B x W x H
+    gt dimensions: B x C x W x H
     
     PAk = sum( True positives for class k) / (H x W) 
     
     mPA = sum(PAk) / k  --> average on the classes
     
     '''
-
-    acc = [] # every entry is the mPA for one image in the batch
     
-    for idx, p in enumerate(pred):      
-        # p and yy have dimensions: C x H x W
+    num_classes = gt.size(1)
+    batch_size = pred.size(0)
+    
+    gt = gt.argmax(dim=1)
+
+    acc = np.zeros((num_classes, batch_size)) # k: channels, B: batches
+
+    for idx, p in enumerate(pred): # loop on the batch
+        # p and yy have dimensions: 1 x H x W
         yy = gt[idx]   
-        
-        TPk = ((p == yy)*1).sum() # true positive across all dimensions C, H and W
-    
-        acc.append(  TPk / (p.size(0)*p.size(1)*p.size(2)) ) # divided by all pixels and averaged over the classes
-            
-    return (sum(acc) / len(acc)).item() # take the average across batch size
+
+        for k in range(num_classes):
+            TP = torch.logical_and((p==k), (yy==k)).sum().item() # True positives in the k-th class
+            acc[k, idx] = TP / (p.size(0)*p.size(1))
+
+        acc_per_channel = list(np.mean(acc, axis = 1)) # take the mean across batches to have the accuracy per channel
+
+        mPA = np.mean(np.sum(acc, axis = 0)) # take the mean across channels to have the accuracy per batch, then take the mean for the meanPixelwiseAccuracy
+
+    return mPA, acc_per_channel       
     
 
-    
 def meanIoU(pred, gt):
     '''
     Compute the mean Intersection over Union across one batch
-    pred and gt dimensions: B x C x W x H
+    pred dimensions: B x W x H
+    gt dimensions: B x C x W x H
     
     IoUk = pred *intersection* gt  / pred *union* gt
     
@@ -36,24 +47,28 @@ def meanIoU(pred, gt):
     
     '''
     
-    channels = pred.size(1)
-    batches = pred.size(0)
+    num_classes = gt.size(1)
+    batch_size = pred.size(0)
     
-    iou = []
-    pred = pred.cpu().numpy()
-    gt = gt.cpu().numpy() 
+    gt = gt.argmax(dim=1)
+
+    iou = np.zeros((num_classes, batch_size)) # k: channels, B: batches
  
-    for idx in range(batches):      
-        y = gt[idx] 
-        p = pred[idx]
-        iouk = []
+    for idx, p in enumerate(pred): # loop on the batch
+        # p and yy have dimensions: 1 x H x W
+        yy = gt[idx]   
+        
+        for k in range(num_classes):   
+            intersection = torch.logical_and((p==k), (yy==k)).sum().item() # pred *intersection* gt in the k-th class
+            union = torch.logical_or((p==k), (yy==k)).sum().item() # pred *union* gt in the k-th class
+            
+            if union != 0:
+                iou[k, idx] = intersection / union   
+            else:
+                iou[k, idx] = 1 # OPPURE 0
+                
+        iou_per_channel = list(np.mean(iou, axis = 1)) # take the mean across batches to have the IoU per channel
 
-        for channel in range(channels):
-            intersection = np.logical_and(p[channel,:], y[channel,:])
-            union = np.logical_or(p[channel,:], y[channel,:])
-            if np.sum(union)!=0:
-                iouk.append( np.sum(intersection) / (np.sum(union)))
+        mIoU = np.mean(np.mean(iou, axis = 0)) # take the mean across channels to have the IoU per batch, then take the mean for the meanIoU
 
-        iou.append(sum(iouk)/ len(iouk))
-   
-    return (sum(iou) / len(iou)).item()
+    return mIoU, iou_per_channel       

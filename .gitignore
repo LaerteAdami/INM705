@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 CW/Checkpoints/
 CW/visionNew/
-CW/Outputs/
+CW/NotebookOutputs/
 # C extensions
 *.so
 build/
