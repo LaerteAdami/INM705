@@ -34,7 +34,7 @@ class _SimpleSegmentationModel(nn.Module):
             x = F.interpolate(x, size=input_shape, mode="bilinear", align_corners=False)
             result["aux"] = x
 
-        return result
+        return result["out"]
 
     
 class _ImprovedSegmentationModel(nn.Module):

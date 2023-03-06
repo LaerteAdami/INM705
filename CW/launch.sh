@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --mail-user=laerte.adami@city.ac.uk       # useful to get an email when jobs starts
 #SBATCH --mail-type=BEGIN
-#SBATCH --job-name=fcn_4c                       # Job name
+#SBATCH --job-name=vgg_no                       # Job name
 #SBATCH --partition=gengpu                        # Select the correct partition.
 #SBATCH --nodes=1                                 # Run on 2 nodes (each node has 48 cores)
 #SBATCH --ntasks-per-node=2
@@ -17,4 +17,4 @@ module add aij
 #Write node hostname into nodename file
 echo $SLURM_JOB_NODELIST
 #Run jupyter lab
-papermill INM705_notebook.ipynb fcn_res_part_4clas.ipynb
+papermill INM705_notebook_vgg_no.ipynb vgg_no.ipynb

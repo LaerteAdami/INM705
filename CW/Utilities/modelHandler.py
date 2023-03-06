@@ -34,7 +34,7 @@ class modelFCN:
         
                 idx, X, y = batch
                 X, y = X.to(device), y.to(device)     
-                output = self.model(X)['out'] # TOGLI QUESTO !!!!
+                output = self.model(X)#['out'] # TOGLI QUESTO !!!!
                 
                 y = y.argmax(dim=1)
                 loss = self.loss_fun(output, y)
@@ -72,7 +72,7 @@ class modelFCN:
         _, X_test, y_test = valloader
         X_test, y_test = X_test.to(device), y_test.to(device) 
 
-        pred = self.model(X_test)['out'] #METTILO PER FCN
+        pred = self.model(X_test)#['out'] #METTILO PER FCN
 
         # Apply softmax and threshold value
         out = softmax(pred,dim=1)# > 0.5

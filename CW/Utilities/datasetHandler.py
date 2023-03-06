@@ -147,7 +147,7 @@ def visualise_and_save(ckp, modelHandler, dataset, image_id, save_name = None):
     gt_viz = gt_viz.argmax(dim=0)
 
     # Process the input with the model
-    pred_viz = modelHandler.model(X_viz_norm.unsqueeze(0).to(device))['out'] #METTILO PER FCN
+    pred_viz = modelHandler.model(X_viz_norm.unsqueeze(0).to(device))#['out'] #METTILO PER FCN
     out_viz = F.softmax(pred_viz,dim=1)
     mask = torch.argmax(out_viz, dim=1)
 
