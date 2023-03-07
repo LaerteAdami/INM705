@@ -36,8 +36,11 @@ class modelFCN:
                 X, y = X.to(device), y.to(device)     
                 output = self.model(X)#['out'] # TOGLI QUESTO !!!!
                 
-                y = y.argmax(dim=1)
+                # y = y.argmax(dim=1) # commented this for DiceLoss calculation, shapes should be matched -Alpie
+                
+                
                 loss = self.loss_fun(output, y)
+                print(loss)
                 loss.backward()
         
                 self.opt.step()
