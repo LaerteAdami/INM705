@@ -152,6 +152,6 @@ class CityscapesClass():
                                (119, 11, 32), # bicycle
                           ]
             
-            self.labels = ["background", "road", "building", "traffic light", "vegetation", 
+            self.labels = ["background", "road", "building", "traffic sign", "vegetation", 
                            "sky", "person", "car", "bus", "bicycle"]        
     

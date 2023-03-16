@@ -20,7 +20,7 @@ class DiceLoss(nn.Module):
         
         intersection = (preds * targets).sum()                            
         dice = (2.*intersection + smooth)/(preds.sum() + targets.sum() + smooth)  
-        print(1 - dice)
+
         return 1 - dice
     
 class DiceBCELoss(nn.Module):
@@ -30,7 +30,7 @@ class DiceBCELoss(nn.Module):
     def forward(self, preds, targets, smooth=1):
         
         #comment out if your model contains a sigmoid or equivalent activation layer
-        preds = F.sigmoid(preds)       
+        preds = torch.sigmoid(preds)       
         
         #flatten label and prediction tensors
         preds = preds.view(-1)

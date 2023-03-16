@@ -64,7 +64,7 @@ class CityscapesDataset(data.Dataset):
     
         cities = sorted(os.listdir(self.img_dir))
          
-        cities = cities[0:1]
+        #cities = cities[0:1]
         img_paths_list = []
         mask_paths_list = []
         for city in cities:
@@ -177,7 +177,7 @@ def visualise_and_save(ckp, modelHandler, dataset, image_id, save_name = None):
             (255, 255, 255)  # Color
         )
         ImageDraw.Draw(img_save).text(
-            (420, 5),  # Coordinates
+            (261, 5),  # Coordinates
             'Ground truth',  # Text
             (255, 255, 255)  # Color
         )
