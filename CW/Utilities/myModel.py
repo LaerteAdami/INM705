@@ -3,6 +3,10 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 class modelConstructor(nn.Module):
+    '''
+    A model constructor to link a backbone and a decoder
+    
+    '''
     
     def __init__(self, backbone, decoder, resize_dims = None):
         

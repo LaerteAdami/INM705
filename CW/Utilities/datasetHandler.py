@@ -64,7 +64,7 @@ class CityscapesDataset(data.Dataset):
     
         cities = sorted(os.listdir(self.img_dir))
          
-        #cities = cities[0:1]
+        cities = cities[0:1]
         img_paths_list = []
         mask_paths_list = []
         for city in cities:
@@ -135,9 +135,6 @@ def visualise_and_save(ckp, modelHandler, dataset, image_id, save_name = None):
     if torch.cuda.is_available():
         device = torch.device('cuda')
           
-    #x = re.search("_*[0-9]*[.]", ckp)
-    #ep = txt[x.start(): x.end()]
-
     # Load checkpoint
     modelHandler.model.load_state_dict(torch.load(ckp))
     modelHandler.model.eval();
