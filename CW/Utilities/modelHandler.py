@@ -36,6 +36,10 @@ class modelFCN:
                 X, y = X.to(device), y.to(device)     
                 output = self.model(X)
                
+                # Apply softmax and threshold value
+                if not torch.is_tensor(output):
+                    output = output['out']
+            
                 loss = self.loss_fun(output, y)
                 loss.backward()
         
